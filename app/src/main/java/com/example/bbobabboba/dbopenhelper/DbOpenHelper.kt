@@ -8,8 +8,10 @@ import android.util.Log
 class DbOpenHelper(context : Context, dbName : String, dbVer : Int, private val tableName : String) : SQLiteOpenHelper(context,dbName,null,dbVer) {
     // 각 테이블 명을 받아서 테이블 생성
     override fun onCreate(p0: SQLiteDatabase?) {
-        val query = "create table $tableName (`no` integer primary key, content text)"
+        val query = "create table if not exists custom (`no` integer primary key, content text)"
+        val query2 = "create table if not exists randomnumber (`no` integer primary key, content text)"
         p0?.execSQL(query)
+        p0?.execSQL(query2)
     }
 
     override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {

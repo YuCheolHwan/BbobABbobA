@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding : ActivityMainBinding
     // 데이터베이스 이름 및 버전 선언
     companion object{
-        val DB_NAME = "bbobA_bbobA"
+        val DB_NAME = "aaa"
         val DB_VER = 1
     }
 
