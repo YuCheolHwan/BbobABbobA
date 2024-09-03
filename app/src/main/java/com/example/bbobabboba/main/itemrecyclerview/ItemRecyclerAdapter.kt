@@ -1,13 +1,11 @@
 package com.example.bbobabboba.main.itemrecyclerview
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bbobabboba.custom.CustomActivity
 import com.example.bbobabboba.databinding.ItemListBinding
-import com.example.bbobabboba.randomchucheom.RandomChuCheomActivity
 import com.example.bbobabboba.randomnumber.RandomNumberActivity
 
 class ItemRecyclerAdapter(val list : MutableList<RandomData>) : RecyclerView.Adapter<ItemRecyclerAdapter.CustomViewHolder>(){
@@ -35,9 +33,7 @@ class ItemRecyclerAdapter(val list : MutableList<RandomData>) : RecyclerView.Ada
                 1 ->{
                     intent = Intent(binding.root.context, RandomNumberActivity::class.java)
                 }
-                2 ->{
-                    intent = Intent(binding.root.context, RandomChuCheomActivity::class.java)
-                }
+
             }
 
             binding.root.context.startActivity(intent)

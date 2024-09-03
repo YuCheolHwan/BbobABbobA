@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -12,11 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bbobabboba.MainActivity
 import com.example.bbobabboba.databinding.ActivityCustomBinding
-import com.example.bbobabboba.databinding.ActivityRandomNumberBinding
 import com.example.bbobabboba.databinding.CustomListBinding
 import com.example.bbobabboba.dbopenhelper.DbOpenHelper
 import com.example.bbobabboba.randomcustomadapter.CustomAdapter
-import kotlin.math.log
 
 class CustomActivity : AppCompatActivity() {
     lateinit var binding : ActivityCustomBinding
@@ -40,7 +37,6 @@ class CustomActivity : AppCompatActivity() {
         binding.btnPlus.setOnClickListener {
             val intent = Intent(this, AddActivity::class.java)
             startActivity(intent)
-
             finish()
         }
         if(list!!.isNotEmpty()){
@@ -62,6 +58,9 @@ class CustomActivity : AppCompatActivity() {
             dbOpenHelper.reTable(TABLE_NAME)
             reSelect(binding,dbOpenHelper,this)
             binding.tvChuk.text = "결과"
+        }
+        binding.btnBack.setOnClickListener {
+            finish()
         }
 
     }

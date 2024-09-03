@@ -5,7 +5,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Adapter
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bbobabboba.databinding.CustomBbobgiListBinding
@@ -45,11 +44,6 @@ class AddAdapter(val list: MutableList<CustomData>) : RecyclerView.Adapter<AddAd
 
     }
 
-//    fun newList(){
-//        for(i in 0 until list.size){
-//            list[i] = CustomData(holder.binding.edtCustom.text.toString())
-//        }
-//    }
     private fun removeItem(position: Int) {
         list.removeAt(position)
         notifyItemRemoved(position)

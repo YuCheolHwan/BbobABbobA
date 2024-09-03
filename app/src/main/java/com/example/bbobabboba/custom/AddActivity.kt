@@ -3,7 +3,6 @@ package com.example.bbobabboba.custom
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bbobabboba.databinding.ActivityAddBinding
 
@@ -27,12 +26,6 @@ class AddActivity : AppCompatActivity() {
         }
 
         binding.btnComplete.setOnClickListener {
-//            for(i in 0 .. adapter.list.size-1){
-//                list[i] = adapter.list[i]
-//            }
-
-            Log.e("AddActivity","${adapter.list[1]}")
-
             val intent = Intent(this, CustomActivity::class.java)
             intent.putParcelableArrayListExtra("list", ArrayList(list))
             startActivity(intent)
@@ -40,11 +33,12 @@ class AddActivity : AppCompatActivity() {
         }
     }
 
-//    override fun onBackPressed() {
-//        super.onBackPressed()
-//        val intent = Intent(this, CustomActivity::class.java)
-//        startActivity(intent)
-//    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, CustomActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
 
     private fun setupRecyclerView() {
         adapter = AddAdapter(list)

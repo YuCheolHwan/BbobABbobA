@@ -19,7 +19,7 @@ class DbOpenHelper(context : Context, dbName : String, dbVer : Int, private val 
 
     fun insertContent(content : String){
         val wd = writableDatabase
-        val query = "insert into $tableName (content) values ($content)"
+        val query = "insert into $tableName (content) values ('$content')"
         wd.execSQL(query)
     }
 

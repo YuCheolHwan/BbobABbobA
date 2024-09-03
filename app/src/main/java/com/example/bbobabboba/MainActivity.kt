@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding : ActivityMainBinding
     // 데이터베이스 이름 및 버전 선언
     companion object{
-        val DB_NAME = "aaa"
+        val DB_NAME = "random_bbobAbbobA.sql"
         val DB_VER = 1
     }
 
@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         val itemList = mutableListOf<RandomData>()
         itemList.add(RandomData(R.drawable.numbers,"커스텀 랜덤 뽑기"))
         itemList.add(RandomData(R.drawable.numbers,"랜덤 숫자 뽑기"))
-        itemList.add(RandomData(R.drawable.numbers,"복불복 제비 뽑기"))
 
         // 리사이클러뷰 연동
         binding.rvMain.adapter = ItemRecyclerAdapter(itemList)
