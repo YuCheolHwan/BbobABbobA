@@ -1,90 +1,83 @@
 package com.example.bbobabboba.custom
 
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.bbobabboba.MainActivity
 import com.example.bbobabboba.databinding.ActivityCustomBinding
-import com.example.bbobabboba.databinding.CustomListBinding
-import com.example.bbobabboba.dbopenhelper.DbOpenHelper
-import com.example.bbobabboba.randomcustomadapter.CustomAdapter
+import com.example.bbobabboba.adapter.CustomAdapter
+import com.example.bbobabboba.adapter.HistoryAdapter
 
 class CustomActivity : AppCompatActivity() {
-    lateinit var binding : ActivityCustomBinding
-
-    val TABLE_NAME = "custom"
+    private lateinit var binding : ActivityCustomBinding
+    private val viewModel : CustomViewModel by viewModels()
+    private lateinit var customAdapter: CustomAdapter
+    private lateinit var historyAdapter: HistoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCustomBinding.inflate(layoutInflater)
-        var list = mutableListOf<CustomData>()
         setContentView(binding.root)
+        observe()
+        setupCustomRecyclerView()
+        setupHistoryRecyclerView()
+        viewModel.dbOpenHelperCreate(this)
+        val list = intent.getParcelableArrayListExtra<CustomData>("list") ?: mutableListOf()
+        viewModel.setIntentList(list)
 
-        // 뽑기 기록을 위한 데이터베이스 선언
-        val dbOpenHelper = DbOpenHelper(this, MainActivity.DB_NAME, MainActivity.DB_VER,TABLE_NAME)
-
-        reSelect(binding,dbOpenHelper,this)
-
-        if(intent.getParcelableArrayListExtra<CustomData>("list") != null){
-                list = intent.getParcelableArrayListExtra<CustomData>("list") as MutableList<CustomData>
-        }
         binding.btnPlus.setOnClickListener {
-            val intent = Intent(this, AddActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-        if(list!!.isNotEmpty()){
-            binding.rvMain.adapter = CAdapter(list)
-            binding.rvMain.layoutManager = LinearLayoutManager(this)
+            viewModel.startAddActivity()
         }
         binding.btnShoot.setOnClickListener {
-            if(list.isEmpty()){
+            if(list.isNullOrEmpty()){
                 Toast.makeText(this,"리스트를 만들어주십시오.",Toast.LENGTH_SHORT).show()
             }else {
-                val ran = (0 until list.size).random()
-                var result = list[ran].inputText
+                val result = viewModel.customRandom()
                 binding.tvChuk.text = "$result 당첨!"
-                dbOpenHelper.insertContent(result)
-                reSelect(binding, dbOpenHelper, this)
             }
         }
         binding.btnDelete.setOnClickListener{
-            dbOpenHelper.reTable(TABLE_NAME)
-            reSelect(binding,dbOpenHelper,this)
+            viewModel.reTable()
             binding.tvChuk.text = "결과"
         }
         binding.btnBack.setOnClickListener {
             finish()
         }
-
     }
-    inner class CAdapter(val list : MutableList<CustomData>):RecyclerView.Adapter<CAdapter.CustomViewHolder>(){
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
-            val binding = CustomListBinding.inflate(LayoutInflater.from(parent.context))
-            return CustomViewHolder(binding)
+    fun observe(){
+        viewModel.startAddActivityValue.observe(this){
+            if(it){
+                val intent = Intent(this, AddActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
+        viewModel.history.observe(this){list ->
+            if(list != null){
+                historyAdapter.updateList(list)
+                binding.rvHistory.scrollToPosition(list.size - 1)
+            }
 
-        override fun getItemCount(): Int = list.size
-
-        override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
-            holder.binding.tvItem.text = list.get(position).inputText
         }
-        inner class CustomViewHolder(val binding : CustomListBinding) : RecyclerView.ViewHolder(binding.root)
-
+        viewModel.intentList.observe(this){list ->
+            if(list != null){
+                customAdapter.updateList(list)
+                binding.rvMain.scrollToPosition(list.size - 1)
+            }
+        }
     }
-    private fun reSelect(binding : ActivityCustomBinding, dbOpenHelper: DbOpenHelper, context : Context){
-        val adapter = CustomAdapter(dbOpenHelper.selectAll())
-        binding.rvHistory.adapter = adapter
-        binding.rvHistory.layoutManager = LinearLayoutManager(context)
-        binding.rvHistory.post {
-            binding.rvHistory.scrollToPosition(adapter.itemCount - 1)
-        }
+    private fun setupHistoryRecyclerView() {
+        historyAdapter = HistoryAdapter(mutableListOf())
+        binding.rvHistory.adapter = historyAdapter
+        binding.rvHistory.layoutManager = LinearLayoutManager(this)
+    }
+    private fun setupCustomRecyclerView(){
+        // RecyclerView 어댑터 설정
+        customAdapter = CustomAdapter(mutableListOf())
+        binding.rvMain.adapter = customAdapter
+        binding.rvMain.layoutManager = LinearLayoutManager(this)
     }
 }

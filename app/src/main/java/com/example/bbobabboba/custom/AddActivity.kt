@@ -1,48 +1,58 @@
 package com.example.bbobabboba.custom
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.bbobabboba.adapter.AddAdapter
 import com.example.bbobabboba.databinding.ActivityAddBinding
 
 class AddActivity : AppCompatActivity() {
-    lateinit var binding: ActivityAddBinding
+    private lateinit var binding: ActivityAddBinding
     private lateinit var adapter: AddAdapter
-    private val list = mutableListOf<CustomData>()
+    private val viewModel: AddViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        list.add(CustomData("입력"))
-        list.add(CustomData("입력"))
         setupRecyclerView()
+        observe()
 
         binding.btnAdd.setOnClickListener {
-            list.add(CustomData("입력"))
-            adapter.notifyItemInserted(list.size - 1)
+            viewModel.addList()
         }
 
         binding.btnComplete.setOnClickListener {
-            val intent = Intent(this, CustomActivity::class.java)
-            intent.putParcelableArrayListExtra("list", ArrayList(list))
-            startActivity(intent)
-            finish()
+            if (viewModel.isListValid()) {
+                startActivity(Intent(this, CustomActivity::class.java).apply {
+                    putParcelableArrayListExtra("list", ArrayList(viewModel.getList()))
+                })
+                finish()
+            } else {
+                Toast.makeText(this, "최소 2가지 이상 입력하셔야 합니다.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        val intent = Intent(this, CustomActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, CustomActivity::class.java))
         finish()
     }
 
     private fun setupRecyclerView() {
-        adapter = AddAdapter(list)
+        adapter = AddAdapter(viewModel.getList())
         binding.rvAdd.adapter = adapter
         binding.rvAdd.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun observe() {
+        viewModel.afterList.observe(this) { list ->
+            adapter.notifyDataSetChanged()
+        }
     }
 }

@@ -2,38 +2,26 @@ package com.example.bbobabboba
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.LinearLayout
-import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bbobabboba.databinding.ActivityMainBinding
 import com.example.bbobabboba.main.itemrecyclerview.ItemRecyclerAdapter
-import com.example.bbobabboba.main.itemrecyclerview.RandomData
 
 class MainActivity : AppCompatActivity() {
-    // databinding 초기 선언
     lateinit var binding : ActivityMainBinding
-    // 데이터베이스 이름 및 버전 선언
-    companion object{
-        val DB_NAME = "random_bbobAbbobA.sql"
-        val DB_VER = 1
-    }
+    private lateinit var adapter: ItemRecyclerAdapter
+    val viewModel : MainViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // databinding 선언
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
-
-        // 뽑기 종류 리스트화
-        val itemList = mutableListOf<RandomData>()
-        itemList.add(RandomData(R.drawable.numbers,"커스텀 랜덤 뽑기"))
-        itemList.add(RandomData(R.drawable.numbers,"랜덤 숫자 뽑기"))
-
-        // 리사이클러뷰 연동
-        binding.rvMain.adapter = ItemRecyclerAdapter(itemList)
+        setupRecyclerView()
+    }
+    private fun setupRecyclerView() {
+        adapter = ItemRecyclerAdapter(viewModel.getList())
+        binding.rvMain.adapter = adapter
         binding.rvMain.layoutManager = LinearLayoutManager(this)
-
     }
 }

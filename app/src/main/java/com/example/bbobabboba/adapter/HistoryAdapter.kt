@@ -1,4 +1,4 @@
-package com.example.bbobabboba.randomcustomadapter
+package com.example.bbobabboba.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,9 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bbobabboba.databinding.TableContentBinding
 import com.example.bbobabboba.dbopenhelper.TableData
 
-class CustomAdapter(val list : MutableList<TableData>):RecyclerView.Adapter<CustomAdapter.CustomViewHolder>(){
+class HistoryAdapter(var list : MutableList<TableData>):RecyclerView.Adapter<HistoryAdapter.CustomViewHolder>(){
 
 
+    fun updateList(newList: MutableList<TableData>) {
+        list = newList
+        notifyDataSetChanged()
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
@@ -21,6 +25,7 @@ class CustomAdapter(val list : MutableList<TableData>):RecyclerView.Adapter<Cust
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         holder.binding.tvNo.text = list.get(position).no.toString()
         holder.binding.tvHistory.text = list.get(position).content
+        
     }
 
     class CustomViewHolder(val binding : TableContentBinding):RecyclerView.ViewHolder(binding.root){
